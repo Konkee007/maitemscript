@@ -22,11 +22,13 @@ SendNotification("Maitem Service", "PlayerGui Loaded", 3)
 
 --- Settings ---
 auto_redeem_all_code = getgenv().Config.AutoRedeemAllCodes
-sound_muted = getgenv().Config.SoundMuted 
+sound_muted = getgenv().Config.SoundMuted
+auto_join_vip_server = getgenv().Config.AutoJoinVipServer
 vip = getgenv().Config.VipServerCode
 target_fps = getgenv().Config.TargetFps
 black_screen = getgenv().Config.BlackScreen
 load_script = getgenv().Config.LoadScript
+kaitun = getgenv().Config.Kaitun
 ---------------
 
 SendNotification("Maitem Service", "Config Loaded", 3)
@@ -54,28 +56,48 @@ if sound_muted then
 end
 
 if game.PlaceId == 1730877806 then
-    SendNotification("Maitem Service", "Joining VIP Server: " .. vip, 3)
-    task.spawn(function()
-        game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("reserved"):InvokeServer(vip)
-    end)
-
-    wait(3)
-    local success, errmsg = pcall(function()
-        SendNotification("Maitem Service", "Joined VIP Server", 3)
-        game:GetService("Players").LocalPlayer.PlayerGui.chooseType.Frame.RemoteEvent:FireServer(true)
-    end)
-    if errmsg then
-        LocalPlayer:Kick("[Kicked by Maitem Service] Unable to join this VIP server ("..vip.."). This may be due to an invalid VIP server code. Please try again or change the code in the config and try again.")
+    if kaitun then 
+        local ID = getgenv().Config.ID[LocalPlayer.Name]
+        SendNotification("Maitem Service [Kaitun]","("..LocalPlayer.Name .. ") Joining VIP Server: " .. ID.VipServerCode, 3)
+        task.spawn(function()
+            game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("reserved"):InvokeServer(ID.VipServerCode)
+        end)
+    
+        wait(3)
+        local success, errmsg = pcall(function()
+            SendNotification("Maitem Service", "Joined VIP Server", 3)
+            game:GetService("Players").LocalPlayer.PlayerGui.chooseType.Frame.RemoteEvent:FireServer(true)
+        end)
+        if errmsg then
+            LocalPlayer:Kick("[Kicked by Maitem Service [Kaitun]] Unable to join this VIP server ("..ID.VipServerCode.."). This may be due to an invalid VIP server code. Please try again or change the code in the config and try again.")
+        end
+    end
+    if auto_join_vip_server then
+        if not kaitun then
+            SendNotification("Maitem Service", "Joining VIP Server: " .. vip, 3)
+            task.spawn(function()
+                game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("reserved"):InvokeServer(vip)
+            end)
+        
+            wait(3)
+            local success, errmsg = pcall(function()
+                SendNotification("Maitem Service", "Joined VIP Server", 3)
+                game:GetService("Players").LocalPlayer.PlayerGui.chooseType.Frame.RemoteEvent:FireServer(true)
+            end)
+            if errmsg then
+                LocalPlayer:Kick("[Kicked by Maitem Service] Unable to join this VIP server ("..vip.."). This may be due to an invalid VIP server code. Please try again or change the code in the config and try again.")
+            end
+        end
     end
 end
 
 if game.PlaceId == 3978370137 then
     task.spawn(function()
-        SendNotification("Maitem Service", "Redeeming All Codes...", 3)
         if auto_redeem_all_code then
+            SendNotification("Maitem Service", "Redeeming All Codes...", 3)
             local Codes = {
-                "MERRYCHRISTMAS2025_1",
-                "MERRYCHRISTMAS2025_2"
+                "HAPPYNEWYEARS2026_1",
+                "HAPPYNEWYEARS2026_2"
             }
 
             for _, code in pairs(Codes) do
@@ -86,6 +108,7 @@ if game.PlaceId == 3978370137 then
             SendNotification("Maitem Service", "All Codes Redeemed", 3)
         end
     end)
+
     task.spawn(function()
         if load_script then 
             SendNotification("Maitem Service", "Loading Feral Script...", 3)
@@ -106,86 +129,174 @@ if game.PlaceId == 3978370137 then
         end)
     end)
 
-    if black_screen then
-        task.spawn(function()
-            SendNotification("Maitem Service", "Enabling Black Screen...", 3)
-            local success, errmsg = pcall(function()
-                local blackFrame = Instance.new("Frame")
-                blackFrame.Parent = LocalPlayer.PlayerGui.HUD
-                blackFrame.Size = UDim2.new(1, 0, 1, 0)
-                blackFrame.Position = UDim2.new(0, 0, 0, 0)
-                blackFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-                blackFrame.ZIndex = -1
-                local PlayerImage = Instance.new("ImageButton")
-                PlayerImage.Parent = blackFrame
-                PlayerImage.AnchorPoint = Vector2.new(0.5, 0.5)
-                PlayerImage.BackgroundTransparency = 1
-                PlayerImage.Position = UDim2.new(0.5,0,0.45,0)
-                PlayerImage.Size = UDim2.new(0.35,0,0.35,0)
-                PlayerImage.SizeConstraint = Enum.SizeConstraint.RelativeYY
-                PlayerImage.Image = game:GetService("Players"):GetUserThumbnailAsync(LocalPlayer.UserId,Enum.ThumbnailType.HeadShot,Enum.ThumbnailSize.Size420x420)
-                local Stroke = Instance.new("UIStroke")
-                Stroke.Parent = PlayerImage
-                Stroke.Color = Color3.fromRGB(255, 255, 255)
-                Stroke.Thickness = 5
-                local UICorner = Instance.new("UICorner")
-                UICorner.Parent = PlayerImage
-                UICorner.CornerRadius = UDim.new(50,0)
-                local PlayerName = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Detail.Level:Clone()
-                PlayerName.Shadow:Destroy()
-                PlayerName.Parent = blackFrame
-                PlayerName.Position = UDim2.new(0.35,0,0.675,0)
-                PlayerName.Size = UDim2.new(0.3,0,0.05,0)
-                PlayerName.TextXAlignment = Enum.TextXAlignment.Center
-                PlayerName.Text = LocalPlayer.Name.." ("..LocalPlayer.DisplayName..")"
-                local ModeStatus = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Detail.Level:Clone()
-                ModeStatus.Shadow:Destroy()
-                ModeStatus.Parent = blackFrame
-                ModeStatus.Position = UDim2.new(0.35,0,0.175,0)
-                ModeStatus.Size = UDim2.new(0.3,0,0.05,0)
-                ModeStatus.TextXAlignment = Enum.TextXAlignment.Center
-                ModeStatus.Text = "Currently using Black Screen Mode"
-                local Cr = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Detail.Level:Clone()
-                Cr.Shadow:Destroy()
-                Cr.Parent = blackFrame
-                Cr.Position = UDim2.new(0.35,0,0.075,0)
-                Cr.Size = UDim2.new(0.3,0,0.1,0)
-                Cr.TextXAlignment = Enum.TextXAlignment.Center
-                Cr.Text = "Maitem Service"
-                local Peli = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Detail.Level:Clone()
-                Peli.Shadow:Destroy()
-                Peli.Parent = blackFrame
-                Peli.Position = UDim2.new(0.35,0,0.775,0)
-                Peli.Size = UDim2.new(0.3,0,0.05,0)
-                Peli.TextXAlignment = Enum.TextXAlignment.Center
-                Peli.TextColor3 = Color3.fromRGB(255, 255, 126)
-                local Lvl = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Detail.Level:Clone()
-                Lvl.Shadow:Destroy()
-                Lvl.Parent = blackFrame
-                Lvl.Position = UDim2.new(0.35,0,0.825,0)
-                Lvl.Size = UDim2.new(0.3,0,0.05,0)
-                Lvl.TextXAlignment = Enum.TextXAlignment.Center
-                task.spawn(function()
-                    while true do
-                        wait(1)
-                        Peli.Text = "Peli "..game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Peli.TextLabel.Text
-                        Lvl.Text = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Detail.Level.Text
-                    end
+    if kaitun then 
+        local ID = getgenv().Config.ID[LocalPlayer.Name]
+        if ID.BlackScreen then
+            task.spawn(function()
+                SendNotification("Maitem Service [Kaitun]","("..LocalPlayer.Name..") Enabling Black Screen...", 3)
+                local success, errmsg = pcall(function()
+                    local blackFrame = Instance.new("Frame")
+                    blackFrame.Parent = LocalPlayer.PlayerGui.HUD
+                    blackFrame.Size = UDim2.new(1, 0, 1, 0)
+                    blackFrame.Position = UDim2.new(0, 0, 0, 0)
+                    blackFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+                    blackFrame.ZIndex = -1
+                    local PlayerImage = Instance.new("ImageButton")
+                    PlayerImage.Parent = blackFrame
+                    PlayerImage.AnchorPoint = Vector2.new(0.5, 0.5)
+                    PlayerImage.BackgroundTransparency = 1
+                    PlayerImage.Position = UDim2.new(0.5,0,0.45,0)
+                    PlayerImage.Size = UDim2.new(0.35,0,0.35,0)
+                    PlayerImage.SizeConstraint = Enum.SizeConstraint.RelativeYY
+                    PlayerImage.Image = game:GetService("Players"):GetUserThumbnailAsync(LocalPlayer.UserId,Enum.ThumbnailType.HeadShot,Enum.ThumbnailSize.Size420x420)
+                    local Stroke = Instance.new("UIStroke")
+                    Stroke.Parent = PlayerImage
+                    Stroke.Color = Color3.fromRGB(255, 255, 255)
+                    Stroke.Thickness = 5
+                    local UICorner = Instance.new("UICorner")
+                    UICorner.Parent = PlayerImage
+                    UICorner.CornerRadius = UDim.new(50,0)
+                    local PlayerName = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Detail.Level:Clone()
+                    PlayerName.Shadow:Destroy()
+                    PlayerName.Parent = blackFrame
+                    PlayerName.Position = UDim2.new(0.35,0,0.675,0)
+                    PlayerName.Size = UDim2.new(0.3,0,0.05,0)
+                    PlayerName.TextXAlignment = Enum.TextXAlignment.Center
+                    PlayerName.Text = LocalPlayer.Name.." ("..LocalPlayer.DisplayName..")"
+                    local ModeStatus = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Detail.Level:Clone()
+                    ModeStatus.Shadow:Destroy()
+                    ModeStatus.Parent = blackFrame
+                    ModeStatus.Position = UDim2.new(0.35,0,0.175,0)
+                    ModeStatus.Size = UDim2.new(0.3,0,0.05,0)
+                    ModeStatus.TextXAlignment = Enum.TextXAlignment.Center
+                    ModeStatus.Text = "Currently using Black Screen Mode"
+                    local Cr = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Detail.Level:Clone()
+                    Cr.Shadow:Destroy()
+                    Cr.Parent = blackFrame
+                    Cr.Position = UDim2.new(0.35,0,0.075,0)
+                    Cr.Size = UDim2.new(0.3,0,0.1,0)
+                    Cr.TextXAlignment = Enum.TextXAlignment.Center
+                    Cr.Text = "Maitem Service"
+                    local Peli = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Detail.Level:Clone()
+                    Peli.Shadow:Destroy()
+                    Peli.Parent = blackFrame
+                    Peli.Position = UDim2.new(0.35,0,0.775,0)
+                    Peli.Size = UDim2.new(0.3,0,0.05,0)
+                    Peli.TextXAlignment = Enum.TextXAlignment.Center
+                    Peli.TextColor3 = Color3.fromRGB(255, 255, 126)
+                    local Lvl = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Detail.Level:Clone()
+                    Lvl.Shadow:Destroy()
+                    Lvl.Parent = blackFrame
+                    Lvl.Position = UDim2.new(0.35,0,0.825,0)
+                    Lvl.Size = UDim2.new(0.3,0,0.05,0)
+                    Lvl.TextXAlignment = Enum.TextXAlignment.Center
+                    task.spawn(function()
+                        while true do
+                            wait(1)
+                            Peli.Text = "Peli "..game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Peli.TextLabel.Text
+                            Lvl.Text = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Detail.Level.Text
+                        end
+                    end)
+                    LocalPlayer.PlayerGui.HUD.Main.Peli.Visible = false
+                    LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Visible = false
+                    LocalPlayer.PlayerGui.HUD.Main.Bars.Health.Visible = false
+                    LocalPlayer.PlayerGui.HUD.Main.Bars.Stamina.Visible = false
+                    LocalPlayer.PlayerGui.QuestTracker.Enabled = false
+                    LocalPlayer.PlayerGui.Compass.Enabled = false
+                    LocalPlayer.PlayerGui.HUD.DisplayOrder = 1499
+                    LocalPlayer.PlayerGui.HUD.Main.Buttons.Visible = false
+                    SendNotification("Maitem Service [Kaitun]","("..LocalPlayer.Name..") Enabled Black Screen", 3)
                 end)
-                LocalPlayer.PlayerGui.HUD.Main.Peli.Visible = false
-                LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Visible = false
-                LocalPlayer.PlayerGui.HUD.Main.Bars.Health.Visible = false
-                LocalPlayer.PlayerGui.HUD.Main.Bars.Stamina.Visible = false
-                LocalPlayer.PlayerGui.QuestTracker.Enabled = false
-                LocalPlayer.PlayerGui.Compass.Enabled = false
-                LocalPlayer.PlayerGui.HUD.DisplayOrder = 1499
-                LocalPlayer.PlayerGui.HUD.Main.Buttons.Visible = false
-                SendNotification("Maitem Service", "Enabled Black Screen", 3)
+                if errmsg then
+                    print(errmsg)
+                    SendNotification("Maitem Service [Kaitun]","("..LocalPlayer.Name..") Error occurred cannot enable black screen", 5)
+                end
             end)
-            if errmsg then
-                print(errmsg)
-                SendNotification("Maitem Service", "Error occurred cannot enable black screen", 5)
-            end
-        end)
+        end
+    end
+
+    if black_screen then
+        if not kaitun then 
+            task.spawn(function()
+                SendNotification("Maitem Service", "Enabling Black Screen...", 3)
+                local success, errmsg = pcall(function()
+                    local blackFrame = Instance.new("Frame")
+                    blackFrame.Parent = LocalPlayer.PlayerGui.HUD
+                    blackFrame.Size = UDim2.new(1, 0, 1, 0)
+                    blackFrame.Position = UDim2.new(0, 0, 0, 0)
+                    blackFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+                    blackFrame.ZIndex = -1
+                    local PlayerImage = Instance.new("ImageButton")
+                    PlayerImage.Parent = blackFrame
+                    PlayerImage.AnchorPoint = Vector2.new(0.5, 0.5)
+                    PlayerImage.BackgroundTransparency = 1
+                    PlayerImage.Position = UDim2.new(0.5,0,0.45,0)
+                    PlayerImage.Size = UDim2.new(0.35,0,0.35,0)
+                    PlayerImage.SizeConstraint = Enum.SizeConstraint.RelativeYY
+                    PlayerImage.Image = game:GetService("Players"):GetUserThumbnailAsync(LocalPlayer.UserId,Enum.ThumbnailType.HeadShot,Enum.ThumbnailSize.Size420x420)
+                    local Stroke = Instance.new("UIStroke")
+                    Stroke.Parent = PlayerImage
+                    Stroke.Color = Color3.fromRGB(255, 255, 255)
+                    Stroke.Thickness = 5
+                    local UICorner = Instance.new("UICorner")
+                    UICorner.Parent = PlayerImage
+                    UICorner.CornerRadius = UDim.new(50,0)
+                    local PlayerName = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Detail.Level:Clone()
+                    PlayerName.Shadow:Destroy()
+                    PlayerName.Parent = blackFrame
+                    PlayerName.Position = UDim2.new(0.35,0,0.675,0)
+                    PlayerName.Size = UDim2.new(0.3,0,0.05,0)
+                    PlayerName.TextXAlignment = Enum.TextXAlignment.Center
+                    PlayerName.Text = LocalPlayer.Name.." ("..LocalPlayer.DisplayName..")"
+                    local ModeStatus = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Detail.Level:Clone()
+                    ModeStatus.Shadow:Destroy()
+                    ModeStatus.Parent = blackFrame
+                    ModeStatus.Position = UDim2.new(0.35,0,0.175,0)
+                    ModeStatus.Size = UDim2.new(0.3,0,0.05,0)
+                    ModeStatus.TextXAlignment = Enum.TextXAlignment.Center
+                    ModeStatus.Text = "Currently using Black Screen Mode"
+                    local Cr = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Detail.Level:Clone()
+                    Cr.Shadow:Destroy()
+                    Cr.Parent = blackFrame
+                    Cr.Position = UDim2.new(0.35,0,0.075,0)
+                    Cr.Size = UDim2.new(0.3,0,0.1,0)
+                    Cr.TextXAlignment = Enum.TextXAlignment.Center
+                    Cr.Text = "Maitem Service"
+                    local Peli = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Detail.Level:Clone()
+                    Peli.Shadow:Destroy()
+                    Peli.Parent = blackFrame
+                    Peli.Position = UDim2.new(0.35,0,0.775,0)
+                    Peli.Size = UDim2.new(0.3,0,0.05,0)
+                    Peli.TextXAlignment = Enum.TextXAlignment.Center
+                    Peli.TextColor3 = Color3.fromRGB(255, 255, 126)
+                    local Lvl = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Detail.Level:Clone()
+                    Lvl.Shadow:Destroy()
+                    Lvl.Parent = blackFrame
+                    Lvl.Position = UDim2.new(0.35,0,0.825,0)
+                    Lvl.Size = UDim2.new(0.3,0,0.05,0)
+                    Lvl.TextXAlignment = Enum.TextXAlignment.Center
+                    task.spawn(function()
+                        while true do
+                            wait(1)
+                            Peli.Text = "Peli "..game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Peli.TextLabel.Text
+                            Lvl.Text = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Detail.Level.Text
+                        end
+                    end)
+                    LocalPlayer.PlayerGui.HUD.Main.Peli.Visible = false
+                    LocalPlayer.PlayerGui.HUD.Main.Bars.Experience.Visible = false
+                    LocalPlayer.PlayerGui.HUD.Main.Bars.Health.Visible = false
+                    LocalPlayer.PlayerGui.HUD.Main.Bars.Stamina.Visible = false
+                    LocalPlayer.PlayerGui.QuestTracker.Enabled = false
+                    LocalPlayer.PlayerGui.Compass.Enabled = false
+                    LocalPlayer.PlayerGui.HUD.DisplayOrder = 1499
+                    LocalPlayer.PlayerGui.HUD.Main.Buttons.Visible = false
+                    SendNotification("Maitem Service", "Enabled Black Screen", 3)
+                end)
+                if errmsg then
+                    print(errmsg)
+                    SendNotification("Maitem Service", "Error occurred cannot enable black screen", 5)
+                end
+            end)
+        end
     end
 end
