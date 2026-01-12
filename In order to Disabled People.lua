@@ -244,7 +244,7 @@ if game.PlaceId == 3978370137 then
         if load_script then 
             SendNotification("Maitem Service", "Loading Feral Script...", 3)
             script_key="giFPnvtDNkeegkePOnftzHPjzoEsbqNc";
-            loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/c5f501e2e9f1ad4cb2f7b6b9c0aa2719.lua"))() 
+            loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/c5f501e2e9f1ad4cb2f7b6b9c0aa2719.lua"))()
         end
     end)
 
@@ -431,3 +431,4 @@ if game.PlaceId == 3978370137 then
         end
     end
 end
+
