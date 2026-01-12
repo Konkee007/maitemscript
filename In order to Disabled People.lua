@@ -38,6 +38,7 @@ kaitun = getgenv().Config.Kaitun
 SendNotification("Maitem Service", "Config Loaded", 3)
 
 wait(3)
+--[[
 if sound_muted then 
    SendNotification("Maitem Service", "Muting All Sounds...", 3)
    
@@ -58,6 +59,7 @@ if sound_muted then
        SendNotification("Maitem Service", "Error occured cannot mute sounds", 5)
    end 
 end
+--]]
 
 if game.PlaceId == 1730877806 then
     if kaitun then 
@@ -153,6 +155,7 @@ if game.PlaceId == 3978370137 then
         end
     end)
 
+    --[[
     task.spawn(function()
         if type(sendwebhook) == "string" then 
             SendNotification("Maitem Service","SendWebhook has Enabled", 20)
@@ -235,6 +238,7 @@ if game.PlaceId == 3978370137 then
             end
         end
     end)
+    --]]
 
     task.spawn(function()
         if load_script then 
