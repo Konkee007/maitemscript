@@ -25,7 +25,6 @@ sendwebhook = getgenv().Config.SendWebhook
 auto_relog = getgenv().Config.AutoRelog
 auto_check_dead = getgenv().Config.AutoCheckDead
 auto_redeem_all_code = getgenv().Config.AutoRedeemAllCodes
-sound_muted = getgenv().Config.SoundMuted
 auto_join_vip_server = getgenv().Config.AutoJoinVipServer
 vip = getgenv().Config.VipServerCode
 target_fps = getgenv().Config.TargetFps
@@ -38,29 +37,6 @@ kaitun = getgenv().Config.Kaitun
 SendNotification("Maitem Service", "Config Loaded", 3)
 
 wait(3)
---[[
-if sound_muted then 
-   SendNotification("Maitem Service", "Muting All Sounds...", 3)
-   
-   local success, errmsg = pcall(function()
-        task.spawn(function()
-            for _, sound in pairs(game:GetDescendants()) do
-                if sound:IsA("Sound") then
-                    sound.Volume = 0
-                end
-            end
-        end)
-   
-       SendNotification("Maitem Service", "All Sounds have muted", 3)
-   
-   end)
-   
-   if errmsg then
-       SendNotification("Maitem Service", "Error occured cannot mute sounds", 5)
-   end 
-end
---]]
-
 if game.PlaceId == 1730877806 then
     if kaitun then 
         local ID = getgenv().Config.ID[LocalPlayer.Name]
@@ -242,9 +218,9 @@ if game.PlaceId == 3978370137 then
 
     task.spawn(function()
         if load_script then 
-            SendNotification("Maitem Service", "Loading Feral Script...", 3)
-            script_key="giFPnvtDNkeegkePOnftzHPjzoEsbqNc";
-            loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/c5f501e2e9f1ad4cb2f7b6b9c0aa2719.lua"))()
+            SendNotification("Maitem Service", "Loading ___ Script...", 3)
+            script_key="";
+            loadstring(game:HttpGet(""))()
         end
     end)
 
@@ -431,4 +407,5 @@ if game.PlaceId == 3978370137 then
         end
     end
 end
+
 
