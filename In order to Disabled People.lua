@@ -1,4 +1,5 @@
 wait(5) -- Safety first naja
+if game.PlaceId ~= 1730877806 or game.PlaceId ~= 3978370137 then return end
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -407,6 +408,7 @@ if game.PlaceId == 3978370137 then
         end
     end
 end
+
 
 
 
