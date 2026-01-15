@@ -214,7 +214,6 @@ if game.PlaceId == 3978370137 then
             end
         end
     end)
-    --]]
 
     task.spawn(function()
         if load_script then 
@@ -223,6 +222,7 @@ if game.PlaceId == 3978370137 then
             loadstring(game:HttpGet(""))()
         end
     end)
+    --]]
 
     task.spawn(function()
         SendNotification("Maitem Service", "Locking FPS to " .. target_fps, 3)
@@ -407,5 +407,6 @@ if game.PlaceId == 3978370137 then
         end
     end
 end
+
 
 
