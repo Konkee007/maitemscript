@@ -95,7 +95,7 @@ if game.PlaceId == 3978370137 then
         if auto_check_dead then
             SendNotification("Maitem Service","AutoCheckDead has Enabled", 3)
             while task.wait(1) do 
-                 if LocalPlayer.Character.Humanoid.Health <= 1 then
+                 if LocalPlayer.Character.Humanoid.Health <= 20 then
                     if auto_relog == false then 
                        SendNotification("Maitem Service",LocalPlayer.Name.." has dead. Rejoining ", 1) 
                     end
@@ -407,6 +407,7 @@ if game.PlaceId == 3978370137 then
         end
     end
 end
+
 
 
 
